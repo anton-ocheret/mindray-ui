@@ -1,32 +1,42 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <el-container>
+    <el-aside width="auto">
+      <el-menu
+        class="app-navigation"
+        :collapse="true"
+        router
+      >
+        <el-menu-item index="quizes">
+          <i class="el-icon-menu"></i>
+          <span slot="title">Список Квизов</span>
+        </el-menu-item>
+        <el-menu-item index="results">
+          <i class="el-icon-s-order"></i>
+          <span slot="title">Результаты</span>
+        </el-menu-item>
+      </el-menu>
+    </el-aside>
+    <el-container class="layout-container">
+      <el-header height="auto">
+        Хедер
+      </el-header>
+      <el-main>Main</el-main>
+      <el-footer>Footer</el-footer>
+    </el-container>
+  </el-container>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+export default {
+  name: 'app',
+};
+</script>
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+<style>
+  .app-navigation {
+    min-height: 100vh;
   }
-}
+  .layout-container {
+    min-height: 100vh;
+  }
 </style>
