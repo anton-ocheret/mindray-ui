@@ -9,6 +9,6 @@ module.exports = {
     },
   },
   devServer: {
-    proxy: 'http://localhost:3001/',
+    proxy: process.env.VUE_APP_API_URL,
   },
 };

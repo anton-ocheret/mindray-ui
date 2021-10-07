@@ -12,7 +12,6 @@ import 'element-ui/lib/theme-chalk/index.css';
 import '@/assets/scss/index.scss';
 
 Vue.config.productionTip = false;
-console.log();
 
 new Vue({
   router,
