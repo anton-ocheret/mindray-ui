@@ -1,3 +1,4 @@
 export const ROUTE_NAMES = {
   QUIZES: 'QUIZES',
+  QUIZES_CREATE: 'QUIZES_CREATE',
 };

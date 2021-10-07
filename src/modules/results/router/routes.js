@@ -10,7 +10,7 @@ export default [
     component: Results,
     meta: {
       layout: Layout,
-      heading: 'Список Ответов',
+      heading: 'Результаты',
     },
   },
 ];

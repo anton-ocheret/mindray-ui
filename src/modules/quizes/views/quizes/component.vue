@@ -1,7 +1,10 @@
 <template>
   <layout-content>
     <template v-slot:header-right>
-      <el-button type="primary">
+      <el-button
+        type="primary"
+        @click="handleClick"
+      >
         Создать Квиз
       </el-button>
     </template>
@@ -18,6 +21,11 @@ export default {
   mixins: [quizesStore],
   components: {
     LayoutContent,
+  },
+  methods: {
+    handleClick() {
+      this.$router.push({ name: this.$root.$options.ROUTE_NAMES.QUIZES_CREATE });
+    },
   },
   mounted() {
     this.fetchQuizes();
