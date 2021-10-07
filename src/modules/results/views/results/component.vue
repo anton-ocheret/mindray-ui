@@ -1,11 +1,16 @@
 <template>
-  <div>
+  <layout-content>
     Список результатов
-  </div>
+  </layout-content>
 </template>
 
 <script>
+const LayoutContent = () => import(/* webpackChunkName: 'layout-page-content' */ '@/components/layouts/page-content');
+
 export default {
   name: 'results',
+  components: {
+    LayoutContent,
+  },
 };
 </script>

@@ -1,6 +1,6 @@
 import { ROUTE_NAMES } from '@/modules/results/router/constants';
 
-const Layout = () => import(/* webpackChunkName: 'layout' */ '@/components/layouts/default');
+const Layout = () => import(/* webpackChunkName: 'layout-page' */ '@/components/layouts/page');
 const Results = () => import(/* webpackChunkName: 'results' */ '@/modules/results/views/results');
 
 export default [
@@ -10,6 +10,7 @@ export default [
     component: Results,
     meta: {
       layout: Layout,
+      heading: 'Список Ответов',
     },
   },
 ];
