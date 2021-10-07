@@ -4,7 +4,7 @@
     height="auto"
   >
     <el-row type="flex" align="middle" justify="end">
-      <p class="copyright">
+      <p>
         &copy; copyright {{ new Date().getFullYear() }}
       </p>
     </el-row>
@@ -18,9 +18,9 @@ export default {
 </script>
 
 <style lang="scss">
-  .app-footer {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    border-top: 1px solid $border-base;
-  }
+.app-footer {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-top: 1px solid $border-base;
+}
 </style>

@@ -3,7 +3,7 @@
     class="app-navigation"
     :collapse="true"
     @select="handleMenuItemClick"
-    :default-active="$route.name"
+    :default-active="getActive()"
   >
     <el-menu-item
       :index="$root.$options.ROUTE_NAMES.QUIZES"
@@ -31,6 +31,9 @@ export default {
     },
     getActiveClass(name) {
       return this.$route.name === name ? 'pointer-events-none' : '';
+    },
+    getActive() {
+      return this.$route.name.split('_')[0];
     },
   },
 };
