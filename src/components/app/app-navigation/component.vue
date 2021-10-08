@@ -42,5 +42,6 @@ export default {
 <style scoped>
 .app-navigation {
   min-height: 100vh;
+  height: 100%;
 }
 </style>
