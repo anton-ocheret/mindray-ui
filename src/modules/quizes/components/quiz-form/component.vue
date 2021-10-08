@@ -157,6 +157,103 @@
               </el-container>
             </el-col>
           </el-row>
+
+          <template v-if="step.kind === 'buttons-list'">
+            <el-row :gutter="20">
+              <el-col :span="24">
+                <el-container class="section" direction="vertical">
+                  <h4 class="heading">Список кнопок</h4>
+                  <div class="add-button">
+                    <el-button
+                      size="small"
+                      @click="() => handleStepButtonAdd(index)"
+                    >
+                      Добавить Кнопку
+                    </el-button>
+                  </div>
+                  <el-tabs
+                    closable
+                    tab-position="left"
+                    v-if="model.steps[index].body.buttons.length"
+                    v-model="activeButton"
+                    @tab-remove="(buttonId) => handleButtonRemove(buttonId, index)"
+                  >
+                    <el-tab-pane
+                      v-for="(button, buttonIndex) in model.steps[index].body.buttons"
+                      :key="button.id"
+                      :label="button.text || `Кнопка ${buttonIndex + 1}`"
+                      :name="button.id"
+                    >
+                      <el-row :gutter="20">
+                        <el-col :span="12">
+                          <el-container class="section" direction="vertical">
+                            <el-form-item
+                              label="Текст"
+                              :key="button.id + 'heading'"
+                              :prop="'steps.' + index + '.body.buttons.' + buttonIndex + '.text'"
+                              :rules="{
+                                required: true, message: 'Обязательное поле', trigger: 'blur'
+                              }"
+                            >
+                              <el-input
+                                v-model="model.steps[index].body.buttons[buttonIndex].text"
+                              ></el-input>
+                            </el-form-item>
+                          </el-container>
+
+                          <el-container class="section" direction="vertical">
+                            <h5 class="heading">Подсказка</h5>
+                            <el-form-item
+                              label="Тип подсказки"
+                              :key="button.id + 'hint-kind'"
+                              :prop="'steps.' + index + '.body.buttons.' + buttonIndex + '.hint.kind'"
+                            >
+                              <el-radio-group v-model="model.steps[index].body.buttons[buttonIndex].hint.kind">
+                                <el-radio-button label="text">Текст</el-radio-button>
+                                <el-radio-button label="modal">Попап</el-radio-button>
+                              </el-radio-group>
+                            </el-form-item>
+
+                            <el-form-item
+                              label="Текст подсказки"
+                              :key="step.id + 'hint-text'"
+                              :prop="'steps.' + index + '.body.buttons.' + buttonIndex + '.hint.data.text'"
+                            >
+                              <el-input
+                                v-model="model.steps[index].body.buttons[buttonIndex].hint.data.text"
+                              ></el-input>
+                            </el-form-item>
+                          </el-container>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-container class="section" direction="vertical">
+                            <h4 class="heading">Навигация</h4>
+                            <el-form-item label="Далее">
+                              <el-select
+                                v-model="model.steps[index].body.buttons[buttonIndex].navigation.next"
+                                placeholder="Далее"
+                                :disabled="!model.steps[index].body.buttons[buttonIndex].text"
+                                clearable
+                              >
+                                <el-option
+                                  v-for="step in model.steps.filter(
+                                    (step, stepIndex) => navigationFilter(step, stepIndex, index)
+                                  )"
+                                  :key="`${step.id}button.navigation.next`"
+                                  :label="step.heading.text.main"
+                                  :value="step.id"
+                                />
+                              </el-select>
+                            </el-form-item>
+                          </el-container>
+                        </el-col>
+                      </el-row>
+                    </el-tab-pane>
+                  </el-tabs>
+                </el-container>
+              </el-col>
+            </el-row>
+          </template>
         </el-tab-pane>
       </el-tabs>
     </el-container>
@@ -173,6 +270,7 @@
 
 <script>
 import { v4 } from 'uuid';
+import { clone } from 'ramda';
 
 export default {
   name: 'quiz-form',
@@ -180,6 +278,7 @@ export default {
     return {
       disabled: false,
       activeStep: null,
+      activeButton: null,
       model: {
         name: '',
         url: '',
@@ -192,6 +291,11 @@ export default {
         url: [
           { required: true, message: 'Обязательное поле', trigger: 'blur' },
         ],
+      },
+      models: {
+        'buttons-list': {
+          buttons: [],
+        },
       },
     };
   },
@@ -226,9 +330,35 @@ export default {
           skip: '',
           next: '',
         },
+        body: clone(this.models['buttons-list']),
       });
 
       this.setActiveStep(this.model.steps);
+    },
+    handleStepButtonAdd(stepIndex) {
+      const id = v4();
+
+      this.model.steps[stepIndex].body.buttons.push({
+        id,
+        text: '',
+        hint: {
+          kind: '',
+          data: {
+            text: '',
+            image: '',
+          },
+        },
+        navigation: {
+          skip: '',
+          next: '',
+        },
+      });
+
+      this.setActiveButton(this.model.steps[stepIndex].body.buttons);
+    },
+    handleButtonRemove(buttonId, stepIndex) {
+      this.model.steps[stepIndex].body.buttons = this.model.steps[stepIndex].body.buttons.filter(({ id }) => id !== buttonId);
+      this.setActiveButton(this.model.steps[stepIndex].body.buttons, buttonId);
     },
     getStepDefaultName(length) {
       return `Шаг-${length + 1}`;
@@ -260,6 +390,13 @@ export default {
 
       if ((isFirstOrLast && toRemoveStepId) || isFirstOrLast) {
         this.activeStep = steps[0].id;
+      }
+    },
+    setActiveButton(buttons, toRemoveButtonId) {
+      const isFirstOrLast = buttons.length === 1;
+
+      if ((isFirstOrLast && toRemoveButtonId) || isFirstOrLast) {
+        this.activeButton = buttons[0].id;
       }
     },
   },
@@ -303,7 +440,8 @@ export default {
   margin-bottom: 5px;
 }
 
-.add-step {
+.add-step,
+.add-button {
   margin-top: 10px;
   margin-bottom: 15px;
 }
