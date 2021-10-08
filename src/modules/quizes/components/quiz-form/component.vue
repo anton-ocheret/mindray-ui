@@ -137,6 +137,26 @@
               </el-container>
             </el-col>
           </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="24">
+              <el-container class="section" direction="vertical">
+                <h4 class="heading">Тип контента</h4>
+                <el-form-item
+                  :key="step.id + 'kind'"
+                  :prop="'steps.' + index + '.kind'"
+                >
+                  <el-radio-group class="field-kind" v-model="model.steps[index].kind">
+                    <el-radio border label="buttons-list">Список кнопок</el-radio>
+                    <el-radio border label="checkbox-list">Список чекбоксов</el-radio>
+                    <el-radio border label="multiple-fields">Список полей</el-radio>
+                    <el-radio border label="single-input">Инпут</el-radio>
+                    <el-radio border label="single-textarea">Текстовое поле</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+              </el-container>
+            </el-col>
+          </el-row>
         </el-tab-pane>
       </el-tabs>
     </el-container>
@@ -175,7 +195,6 @@ export default {
   },
   methods: {
     navigationFilter(step, stepIndex, index) {
-      console.log(stepIndex, index);
       return stepIndex !== index && step.heading.text.main;
     },
     handleFormSubmit() {
@@ -187,6 +206,7 @@ export default {
       this.model.steps.push({
         id,
         name: this.getStepDefaultName(this.model.steps.length),
+        kind: 'buttons-list',
         heading: {
           text: {
             main: '',
@@ -265,6 +285,12 @@ export default {
 }
 ::v-deep .el-input__inner {
   padding-right: 30px;
+}
+.field-kind {
+  margin-left: -5px;
+  & ::v-deep .el-radio {
+    margin: 5px !important;
+  }
 }
 .heading {
   text-align: left;
