@@ -172,6 +172,8 @@
 </template>
 
 <script>
+import { v4 } from 'uuid';
+
 export default {
   name: 'quiz-form',
   data() {
@@ -201,7 +203,7 @@ export default {
       this.$refs.form.validate((valid) => console.log(valid, this.model));
     },
     handleStepAdd() {
-      const id = String(Math.random());
+      const id = v4();
 
       this.model.steps.push({
         id,
