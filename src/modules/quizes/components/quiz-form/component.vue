@@ -96,6 +96,46 @@
                 </el-form-item>
               </el-container>
             </el-col>
+            <el-col :span="12">
+              <el-container class="section" direction="vertical">
+                <h4 class="heading">Навигация</h4>
+                <el-form-item label="Далее">
+                  <el-select
+                    v-model="model.steps[index].navigation.next"
+                    placeholder="Далее"
+                    :disabled="!model.steps[index].heading.text.main"
+                    clearable
+                  >
+                    <el-option
+                      v-for="step in model.steps.filter(
+                        (step, stepIndex) => navigationFilter(step, stepIndex, index)
+                      )"
+                      :key="`${step.id}navigation.next`"
+                      :label="step.heading.text.main"
+                      :value="step.id"
+                    />
+                  </el-select>
+                </el-form-item>
+
+                <el-form-item label="Пропустить">
+                  <el-select
+                    v-model="model.steps[index].navigation.skip"
+                    placeholder="Пропустить"
+                    :disabled="!model.steps[index].heading.text.main"
+                    clearable
+                  >
+                    <el-option
+                      v-for="step in model.steps.filter(
+                        (step, stepIndex) => navigationFilter(step, stepIndex, index)
+                      )"
+                      :key="`${step.id}navigation.skip`"
+                      :label="step.heading.text.main"
+                      :value="step.id"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-container>
+            </el-col>
           </el-row>
         </el-tab-pane>
       </el-tabs>
@@ -112,23 +152,6 @@
 </template>
 
 <script>
-// kind: {
-//   type: String,
-//   required: true,
-// },
-// heading: {
-//   text: {
-//     main: String,
-//     sub: String,
-//   },
-//   hint: {
-//     kind: String,
-//     data: {
-//       text: String,
-//       image: String,
-//     },
-//   },
-// },
 export default {
   name: 'quiz-form',
   data() {
@@ -151,6 +174,10 @@ export default {
     };
   },
   methods: {
+    navigationFilter(step, stepIndex, index) {
+      console.log(stepIndex, index);
+      return stepIndex !== index && step.heading.text.main;
+    },
     handleFormSubmit() {
       this.$refs.form.validate((valid) => console.log(valid, this.model));
     },
@@ -173,6 +200,10 @@ export default {
             },
           },
         },
+        navigation: {
+          skip: '',
+          next: '',
+        },
       });
 
       this.setActiveStep(this.model.steps);
@@ -181,9 +212,21 @@ export default {
       return `Шаг-${length + 1}`;
     },
     handleStepRemove(value) {
+      const step = this.model.steps.find(
+        ({ navigation }) => navigation.next === value || navigation.skip === value,
+      );
+
+      if (step) {
+        return this.$message({
+          message: `Сперва нужно удалить из навигации в шаге "${step.heading.text.main}"`,
+          type: 'warning',
+          duration: 5000,
+        });
+      }
+
       this.model.steps = this.model.steps.filter(({ id }) => id !== value);
       this.reorderSteps();
-      this.setActiveStep(this.model.steps, value);
+      return this.setActiveStep(this.model.steps, value);
     },
     reorderSteps() {
       this.model.steps = this.model.steps.map(
@@ -219,6 +262,9 @@ export default {
     top: 50%;
     transform: translateY(-50%);
   }
+}
+::v-deep .el-input__inner {
+  padding-right: 30px;
 }
 .heading {
   text-align: left;
