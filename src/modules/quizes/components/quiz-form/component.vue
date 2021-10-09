@@ -146,7 +146,11 @@
                   :key="step.id + 'kind'"
                   :prop="'steps.' + index + '.kind'"
                 >
-                  <el-radio-group class="field-kind" v-model="model.steps[index].kind">
+                  <el-radio-group
+                    class="field-kind"
+                    v-model="model.steps[index].kind"
+                    @change="handleStepKindChange"
+                  >
                     <el-radio border label="buttons-list">Список кнопок</el-radio>
                     <el-radio border label="checkbox-list">Список чекбоксов</el-radio>
                     <el-radio border label="multiple-fields">Список полей</el-radio>
@@ -174,7 +178,7 @@
                   <el-tabs
                     closable
                     tab-position="left"
-                    v-if="model.steps[index].body.buttons.length"
+                    v-if="model.steps[index].body"
                     v-model="activeButton"
                     @tab-remove="(buttonId) => handleButtonRemove(buttonId, index)"
                   >
@@ -254,6 +258,39 @@
               </el-col>
             </el-row>
           </template>
+
+          <template v-if="step.kind === 'single-input'">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-container class="section" direction="vertical">
+                  <el-form-item
+                    v-if="model.steps[index].body"
+                    label="Плейсхолдер"
+                    :prop="'steps.' + index + '.body.placeholder'"
+                  >
+                    <el-input v-model="model.steps[index].body.placeholder"></el-input>
+                  </el-form-item>
+                </el-container>
+              </el-col>
+
+              <el-col :span="12">
+                <el-container class="section" direction="vertical">
+                  <el-form-item
+                    label="Валидации"
+                    :prop="'steps.' + index + '.body.validations'"
+                  >
+                    <el-checkbox-group
+                      v-if="model.steps[index].body && model.steps[index].body.validations"
+                      v-model="model.steps[index].body.validations"
+                    >
+                      <el-checkbox label="required">Обязательное поле</el-checkbox>
+                      <el-checkbox label="email">Валидный Е-мейл</el-checkbox>
+                    </el-checkbox-group>
+                  </el-form-item>
+                </el-container>
+              </el-col>
+            </el-row>
+          </template>
         </el-tab-pane>
       </el-tabs>
     </el-container>
@@ -296,10 +333,23 @@ export default {
         'buttons-list': {
           buttons: [],
         },
+        'single-input': {
+          placeholder: '',
+          validations: [],
+        },
       },
     };
   },
   methods: {
+    handleStepKindChange(nextKind) {
+      console.log(nextKind);
+      const getIsIdEquals = ({ id }) => id === this.activeStep;
+
+      const activeStepIndex = this.model.steps.findIndex(getIsIdEquals);
+      const nextBody = this.models[nextKind];
+
+      this.model.steps[activeStepIndex].body = clone(nextBody);
+    },
     navigationFilter(step, stepIndex, index) {
       return stepIndex !== index && step.heading.text.main;
     },
