@@ -291,6 +291,38 @@
               </el-col>
             </el-row>
           </template>
+
+          <template v-if="step.kind === 'single-textarea'">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-container class="section" direction="vertical">
+                  <el-form-item
+                    v-if="model.steps[index].body"
+                    label="Плейсхолдер"
+                    :prop="'steps.' + index + '.body.placeholder'"
+                  >
+                    <el-input v-model="model.steps[index].body.placeholder"></el-input>
+                  </el-form-item>
+                </el-container>
+              </el-col>
+
+              <el-col :span="12">
+                <el-container class="section" direction="vertical">
+                  <el-form-item
+                    label="Валидации"
+                    :prop="'steps.' + index + '.body.validations'"
+                  >
+                    <el-checkbox-group
+                      v-if="model.steps[index].body && model.steps[index].body.validations"
+                      v-model="model.steps[index].body.validations"
+                    >
+                      <el-checkbox label="required">Обязательное поле</el-checkbox>
+                    </el-checkbox-group>
+                  </el-form-item>
+                </el-container>
+              </el-col>
+            </el-row>
+          </template>
         </el-tab-pane>
       </el-tabs>
     </el-container>
@@ -334,6 +366,10 @@ export default {
           buttons: [],
         },
         'single-input': {
+          placeholder: '',
+          validations: [],
+        },
+        'single-textarea': {
           placeholder: '',
           validations: [],
         },
