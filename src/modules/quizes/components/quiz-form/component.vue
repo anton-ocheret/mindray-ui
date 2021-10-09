@@ -323,6 +323,92 @@
               </el-col>
             </el-row>
           </template>
+
+          <template v-if="step.kind === 'checkbox-list'">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-container class="section" direction="vertical">
+                  <el-form-item
+                    label="Количество колонок"
+                    :prop="'steps.' + index + '.body.cols'"
+                  >
+                    <el-input-number
+                      v-model="model.steps[index].body.cols"
+                      size="mini"
+                      :min="1"
+                      :max="4"
+                    ></el-input-number>
+                  </el-form-item>
+                  <h4 class="heading">Список чекбоксов</h4>
+                  <div class="add-button">
+                    <el-button
+                      size="small"
+                      @click="() => handleStepCheckboxAdd(index, 'checkboxes')"
+                    >
+                      Добавить Чекбокс
+                    </el-button>
+                  </div>
+                  <template v-for="(checkbox, checkboxIndex) in model.steps[index].body.checkboxes">
+                    <el-form-item
+                      label="Чекбокс"
+                      :key="checkbox.id"
+                      :prop="'steps.' + index + '.body.checkboxes.' + checkboxIndex + '.label'"
+                      :rules="{
+                        required: true, message: 'Обязательное поле', trigger: 'blur'
+                      }"
+                    >
+                      <el-input
+                        v-model="model.steps[index].body.checkboxes[checkboxIndex].label"
+                        placeholder="Лейбл"
+                      >
+                        <el-button
+                          slot="append"
+                          icon="el-icon-delete"
+                          @click="() => handleStepCheckboxDelete(index, 'checkboxes', checkboxIndex)"
+                        ></el-button>
+                      </el-input>
+                    </el-form-item>
+                  </template>
+                </el-container>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-container class="section" direction="vertical">
+                  <h4 class="heading">Список дополнительных чекбоксов</h4>
+                  <div class="add-button">
+                    <el-button
+                      size="small"
+                      @click="() => handleStepCheckboxAdd(index, 'additional')"
+                    >
+                      Добавить Дополнительный Чекбокс
+                    </el-button>
+                  </div>
+                  <template v-for="(checkbox, additionalCheckboxIndex) in model.steps[index].body.additional">
+                    <el-form-item
+                      label="Дополнительный чекбокс"
+                      :key="checkbox.id"
+                      :prop="'steps.' + index + '.body.additional.' + additionalCheckboxIndex + '.label'"
+                      :rules="{
+                        required: true, message: 'Обязательное поле', trigger: 'blur'
+                      }"
+                    >
+                      <el-input
+                        v-model="model.steps[index].body.additional[additionalCheckboxIndex].label"
+                        placeholder="Лейбл"
+                      >
+                        <el-button
+                          slot="append"
+                          icon="el-icon-delete"
+                          @click="() => handleStepCheckboxDelete(index, 'additional', additionalCheckboxIndex)"
+                        ></el-button>
+                      </el-input>
+                    </el-form-item>
+                  </template>
+                </el-container>
+              </el-col>
+            </el-row>
+          </template>
         </el-tab-pane>
       </el-tabs>
     </el-container>
@@ -372,6 +458,11 @@ export default {
         'single-textarea': {
           placeholder: '',
           validations: [],
+        },
+        'checkbox-list': {
+          cols: 1,
+          checkboxes: [],
+          additional: [],
         },
       },
     };
@@ -445,6 +536,17 @@ export default {
     handleButtonRemove(buttonId, stepIndex) {
       this.model.steps[stepIndex].body.buttons = this.model.steps[stepIndex].body.buttons.filter(({ id }) => id !== buttonId);
       this.setActiveButton(this.model.steps[stepIndex].body.buttons, buttonId);
+    },
+    handleStepCheckboxAdd(stepIndex, modelKey) {
+      const id = v4();
+
+      this.model.steps[stepIndex].body[modelKey].push({
+        id,
+        label: '',
+      });
+    },
+    handleStepCheckboxDelete(stepIndex, modelKey, checkboxIndex) {
+      this.model.steps[stepIndex].body[modelKey] = this.model.steps[stepIndex].body[modelKey].filter((_, index) => index !== checkboxIndex);
     },
     getStepDefaultName(length) {
       return `Шаг-${length + 1}`;
