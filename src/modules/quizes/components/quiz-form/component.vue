@@ -474,13 +474,18 @@
       </el-tabs>
     </el-container>
 
-    <el-button
-      class="button-submit"
-      type="primary"
-      @click="handleFormSubmit"
-    >
-      Создать
-    </el-button>
+    <el-col>
+      <el-row type="flex" justify="end">
+        <el-button
+          class="button-submit"
+          type="primary"
+          size="default"
+          @click="handleFormSubmit"
+        >
+          Создать
+        </el-button>
+      </el-row>
+    </el-col>
   </el-form>
 </template>
 
