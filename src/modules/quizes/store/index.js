@@ -1,4 +1,4 @@
-import { list } from '@/api/quizes';
+import { list, create } from '@/api/quizes';
 import { actions, mutations } from './constants';
 
 export default {
@@ -8,6 +8,9 @@ export default {
       loading: false,
       data: [],
     },
+    quiz: {
+      loading: false,
+    },
   }),
   mutations: {
     [mutations.UPDATE_QUIZES_LOADING](state, payload) {
@@ -16,8 +19,20 @@ export default {
     [mutations.UPDATE_QUIZES_DATA](state, payload) {
       state.quizes.data = payload;
     },
+    [mutations.UPDATE_QUIZE_LOADING](state, payload) {
+      state.quiz.loading = payload;
+    },
   },
   actions: {
+    [actions.CREATE_QUIZ]({ commit }, data) {
+      commit(mutations.UPDATE_QUIZE_LOADING, true);
+      return new Promise((resolve, reject) => {
+        create(data)
+          .then(resolve)
+          .catch(reject)
+          .finally(commit(mutations.UPDATE_QUIZE_LOADING, true));
+      });
+    },
     [actions.GET_QUIZES]({ commit }) {
       commit(mutations.UPDATE_QUIZES_LOADING, true);
       list()

@@ -8,11 +8,12 @@ const {
 
 export default {
   computed: {
-    ...mapQuizesState(['quizes']),
+    ...mapQuizesState(['quizes', 'quiz']),
   },
   methods: {
     ...mapQuizesActions({
       fetchQuizes: quizesActions.GET_QUIZES,
+      createQuiz: quizesActions.CREATE_QUIZ,
     }),
   },
 };

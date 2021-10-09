@@ -480,6 +480,7 @@
           class="button-submit"
           type="primary"
           size="default"
+          :loading="loading"
           @click="handleFormSubmit"
         >
           Создать
@@ -495,14 +496,19 @@ import { clone } from 'ramda';
 
 export default {
   name: 'quiz-form',
+  props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
-      disabled: false,
       activeStep: null,
       activeButton: null,
       model: {
-        name: '',
-        url: '',
+        name: 'Мой первый квиз',
+        url: '/my-quiz',
         steps: [],
       },
       rules: {
@@ -549,7 +555,11 @@ export default {
       return stepIndex !== index && step.heading.text.main;
     },
     handleFormSubmit() {
-      this.$refs.form.validate((valid) => console.log(valid, this.model));
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          this.$emit('quiz-form:create', this.model);
+        }
+      });
     },
     handleStepAdd() {
       const id = v4();

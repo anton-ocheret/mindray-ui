@@ -18,10 +18,10 @@ const LayoutContent = () => import(/* webpackChunkName: 'layout-page-content' */
 
 export default {
   name: 'quizes',
-  mixins: [quizesStore],
   components: {
     LayoutContent,
   },
+  mixins: [quizesStore],
   methods: {
     handleClick() {
       this.$router.push({ name: this.$root.$options.ROUTE_NAMES.QUIZES_CREATE });
