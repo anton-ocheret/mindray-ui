@@ -26,9 +26,9 @@ export default {
             position: 'bottom-right',
             duration: 50000,
           });
+          this.$router.push({ name: this.$root.$options.ROUTE_NAMES.QUIZES });
         })
         .catch((error) => {
-          console.dir(error.response.data);
           if (error && error.response && error.response.data) {
             if (error.response.data.statusCode && error.response.data.statusCode === 400) {
               this.$notify.error({
