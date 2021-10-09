@@ -409,6 +409,67 @@
               </el-col>
             </el-row>
           </template>
+
+          <template v-if="step.kind === 'multiple-fields'">
+            <el-row :gutter="20">
+              <el-col :span="24">
+                <el-container class="section" direction="vertical">
+                  <h4 class="heading">Список полей</h4>
+                  <div class="add-button">
+                    <el-button
+                      size="small"
+                      @click="() => handleFieldAdd(index)"
+                    >
+                      Добавить поле
+                    </el-button>
+                  </div>
+                  <template v-for="(field, fieldIndex) in model.steps[index].body.fields">
+                    <el-form-item
+                      label="Тип"
+                      size="small"
+                      :key="field.id + 'field-kind'"
+                      :prop="'steps.' + index + '.body.fields.' + fieldIndex + '.kind'"
+                    >
+                      <el-radio-group v-model="model.steps[index].body.fields[fieldIndex].kind">
+                        <el-radio-button label="input">Инпут</el-radio-button>
+                        <el-radio-button label="textarea">Текстовое поле</el-radio-button>
+                      </el-radio-group>
+                    </el-form-item>
+
+                    <el-row :key="field.id + 'field-section'" :gutter="20">
+                      <el-col :span="12">
+                        <el-container class="section" direction="vertical">
+                          <el-form-item
+                            label="Плейсхолдер"
+                            :prop="'steps.' + index + '.body.fields.' + fieldIndex + '.data.placeholder'"
+                            :rules="{
+                              required: true, message: 'Обязательное поле', trigger: 'blur'
+                            }"
+                          >
+                            <el-input v-model="model.steps[index].body.fields[fieldIndex].data.placeholder"></el-input>
+                          </el-form-item>
+                        </el-container>
+                      </el-col>
+
+                      <el-col :span="12">
+                        <el-container class="section" direction="vertical">
+                          <el-form-item
+                            label="Валидации"
+                            :prop="'steps.' + index + '.body.fields.' + fieldIndex + '.data.validations'"
+                          >
+                            <el-checkbox-group v-model="model.steps[index].body.fields[fieldIndex].data.validations">
+                              <el-checkbox label="required">Обязательное поле</el-checkbox>
+                              <el-checkbox label="email">Валидный Е-мейл</el-checkbox>
+                            </el-checkbox-group>
+                          </el-form-item>
+                        </el-container>
+                      </el-col>
+                    </el-row>
+                  </template>
+                </el-container>
+              </el-col>
+            </el-row>
+          </template>
         </el-tab-pane>
       </el-tabs>
     </el-container>
@@ -464,12 +525,14 @@ export default {
           checkboxes: [],
           additional: [],
         },
+        'multiple-fields': {
+          fields: [],
+        },
       },
     };
   },
   methods: {
     handleStepKindChange(nextKind) {
-      console.log(nextKind);
       const getIsIdEquals = ({ id }) => id === this.activeStep;
 
       const activeStepIndex = this.model.steps.findIndex(getIsIdEquals);
@@ -547,6 +610,21 @@ export default {
     },
     handleStepCheckboxDelete(stepIndex, modelKey, checkboxIndex) {
       this.model.steps[stepIndex].body[modelKey] = this.model.steps[stepIndex].body[modelKey].filter((_, index) => index !== checkboxIndex);
+    },
+    handleFieldAdd(stepIndex) {
+      const id = v4();
+
+      this.model.steps[stepIndex].body.fields.push({
+        id,
+        kind: 'input',
+        data: {
+          placeholder: '',
+          validations: [],
+        },
+      });
+    },
+    handleFieldADelete(stepIndex, fieldIndex) {
+      this.model.steps[stepIndex].body.fields = this.model.steps[stepIndex].body.fields.filter(({ id }) => id !== fieldIndex);
     },
     getStepDefaultName(length) {
       return `Шаг-${length + 1}`;
