@@ -134,6 +134,8 @@
                     />
                   </el-select>
                 </el-form-item>
+
+                <el-checkbox v-model="model.steps[index].navigation.last" label="last">Последний шаг</el-checkbox>
               </el-container>
             </el-col>
           </el-row>
@@ -249,6 +251,8 @@
                                 />
                               </el-select>
                             </el-form-item>
+
+                            <el-checkbox v-model="model.steps[index].body.buttons[buttonIndex].navigation.last" label="last">Последний шаг</el-checkbox>
                           </el-container>
                         </el-col>
                       </el-row>
