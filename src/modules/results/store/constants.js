@@ -1,0 +1,8 @@
+export const mutations = {
+  UPDATE_RESULTS_LOADING: 'UPDATE_RESULTS_LOADING',
+  UPDATE_RESULTS_DATA: 'UPDATE_RESULTS_DATA',
+};
+
+export const actions = {
+  GET_QUIZES_RESULTS: 'GET_QUIZES_RESULTS',
+};
