@@ -1,4 +1,4 @@
 import axios from 'axios';
 
-export const list = () => fetch('/quizes').then((res) => res.json()).then((data) => data);
-export const create = (data) => axios.post('/quizes', data);
+export const list = () => fetch(`${process.env.VUE_API_URL}/quizes`).then((res) => res.json()).then((data) => data);
+export const create = (data) => axios.post(`${process.env.VUE_API_URL}/quizes`, data);
