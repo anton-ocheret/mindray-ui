@@ -30,7 +30,7 @@ export default {
         create(data)
           .then(resolve)
           .catch(reject)
-          .finally(commit(mutations.UPDATE_QUIZE_LOADING, true));
+          .finally(commit(mutations.UPDATE_QUIZE_LOADING, false));
       });
     },
     [actions.GET_QUIZES]({ commit }) {
