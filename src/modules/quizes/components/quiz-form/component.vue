@@ -511,8 +511,8 @@ export default {
       activeStep: null,
       activeButton: null,
       model: {
-        name: 'Мой первый квиз',
-        url: '/my-quiz',
+        name: '',
+        url: '',
         steps: [],
       },
       rules: {
